@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "hw2YncsWQuq+JrwZFEfaF550Mm4VhmDw8XqhlLzPyPb6OWIf4Ga10kIgMYbbbGyRPjt3DmsWEY2HMbQ4dIJn0w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\pawel\\source\\repos\\rest-client-base\\Garbacik.NetCore.Utilities.Restful\\Garbacik.NetCore.Utilities.Restful.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\pawel\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\pawel\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\pawel\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\pawel\\.nuget\\packages\\restsharp\\106.11.7\\restsharp.106.11.7.nupkg.sha512"
+  ],
+  "logs": []
+}
