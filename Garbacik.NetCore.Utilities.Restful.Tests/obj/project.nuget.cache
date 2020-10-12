@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "iaNVYbfJXK/9GQ0SgqBZJfVKmW4vC0hh7pKkJp6UKQtfsTPuYTiOcHNGAnGGoaUl2UWVI/00NCcdk2jxBydnZA==",
+  "dgSpecHash": "aPLtmq8dD+2QemBexdVFHdzekYKasFYN4r+53u4HQYokvmVwydVW8xFGVyVEzyE6Bo0F+IZGyO9ibHipIsT0sQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\pawel\\source\\repos\\rest-client-base\\Garbacik.NetCore.Utilities.Restful.Tests\\Garbacik.NetCore.Utilities.Restful.Tests.csproj",
   "expectedPackageFiles": [
@@ -19,8 +19,7 @@
     "C:\\Users\\pawel\\.nuget\\packages\\xunit.core\\2.4.0\\xunit.core.2.4.0.nupkg.sha512",
     "C:\\Users\\pawel\\.nuget\\packages\\xunit.extensibility.core\\2.4.0\\xunit.extensibility.core.2.4.0.nupkg.sha512",
     "C:\\Users\\pawel\\.nuget\\packages\\xunit.extensibility.execution\\2.4.0\\xunit.extensibility.execution.2.4.0.nupkg.sha512",
-    "C:\\Users\\pawel\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.0\\xunit.runner.visualstudio.2.4.0.nupkg.sha512",
-    "C:\\Users\\pawel\\.nuget\\packages\\restclientbase\\1.0.0\\restclientbase.1.0.0.nupkg.sha512"
+    "C:\\Users\\pawel\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.0\\xunit.runner.visualstudio.2.4.0.nupkg.sha512"
   ],
   "logs": []
 }
