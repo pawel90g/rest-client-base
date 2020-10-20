@@ -28,4 +28,4 @@ jobs:
       with:
         PROJECT_FILE_PATH: Garbacik.NetCore.Utilities.Restful/Garbacik.NetCore.Utilities.Restful.csproj
         NUGET_SOURCE: https://nuget.pkg.github.com/pawel90g
-        NUGET_KEY: 43a411b58b7170a2adbc6c24e6dfe40bb38247dd
+        NUGET_KEY: 4b5b18094a7c65e98bf83ab6922fb898b51b3306
