@@ -1,9 +1,0 @@
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\bin\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.deps.json
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\bin\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.dll
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\bin\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.pdb
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\obj\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.csprojAssemblyReference.cache
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\obj\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.AssemblyInfoInputs.cache
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\obj\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.AssemblyInfo.cs
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\obj\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.csproj.CoreCompileInputs.cache
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\obj\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.dll
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.Restful\obj\Debug\netstandard2.0\Garbacik.NetCore.Utilities.Restful.pdb

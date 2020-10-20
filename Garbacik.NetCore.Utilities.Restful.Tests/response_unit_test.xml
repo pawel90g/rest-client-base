@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<response id="2020" xmlns="https://garbacik.eu">
+  <items>
+    <item name="item 1"></item>
+    <item name="item 2"></item>
+  </items>
+  <values>
+    <value>val1</value>
+    <value>val2</value>
+  </values>
+</response>

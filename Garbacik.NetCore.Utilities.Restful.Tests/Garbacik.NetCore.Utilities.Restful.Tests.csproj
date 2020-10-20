@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Garbacik.NetCore.Utilities.Restful\Garbacik.NetCore.Utilities.Restful.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="response_unit_test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

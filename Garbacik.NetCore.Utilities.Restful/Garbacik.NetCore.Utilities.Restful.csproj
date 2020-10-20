@@ -4,11 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>RestClientBase</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Garbacik Paweł</Authors>
     <Company>Margaret-Solutions</Company>
     <PackageDescription>Rest Client implementation based on RestSharp library</PackageDescription>
     <RepositoryUrl>https://github.com/pawel90g/rest-client-base</RepositoryUrl>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

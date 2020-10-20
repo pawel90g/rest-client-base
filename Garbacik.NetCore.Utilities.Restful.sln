@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Garbacik.NetCore.Utilities.Restful", "Garbacik.NetCore.Utilities.Restful\Garbacik.NetCore.Utilities.Restful.csproj", "{46DB0B2D-DB97-469B-8ACF-DDCD21901556}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Garbacik.NetCore.Utilities.Restful.Tests", "Garbacik.NetCore.Utilities.Restful.Tests\Garbacik.NetCore.Utilities.Restful.Tests.csproj", "{5748D308-1C02-4A43-AEC9-A715D58C2A3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Garbacik.NetCore.Utilities.Restful.Tests", "Garbacik.NetCore.Utilities.Restful.Tests\Garbacik.NetCore.Utilities.Restful.Tests.csproj", "{5748D308-1C02-4A43-AEC9-A715D58C2A3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

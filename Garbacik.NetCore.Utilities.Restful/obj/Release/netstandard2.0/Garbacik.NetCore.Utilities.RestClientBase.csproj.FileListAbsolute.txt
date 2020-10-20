@@ -1,9 +1,0 @@
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\bin\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.deps.json
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\bin\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.dll
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\bin\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.pdb
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\obj\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.csprojAssemblyReference.cache
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\obj\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.AssemblyInfoInputs.cache
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\obj\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.AssemblyInfo.cs
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\obj\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.csproj.CoreCompileInputs.cache
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\obj\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.dll
-C:\Users\pawel\source\repos\rest-client-base\Garbacik.NetCore.Utilities.RestClientBase\obj\Release\netstandard2.0\Garbacik.NetCore.Utilities.RestClientBase.pdb

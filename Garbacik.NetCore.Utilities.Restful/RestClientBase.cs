@@ -67,9 +67,8 @@ namespace Garbacik.NetCore.Utilities.Restful
 
                 return (httpRequestAttr.Method, path);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e);
                 throw;
             }
         }
