@@ -27,5 +27,5 @@ jobs:
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
         PROJECT_FILE_PATH: Garbacik.NetCore.Utilities.Restful/Garbacik.NetCore.Utilities.Restful.csproj
-        NUGET_SOURCE: https://nuget.pkg.github.com/pawel90g
+        NUGET_SOURCE: https://nuget.pkg.github.com/pawel90g/index.json
         NUGET_KEY: 4b5b18094a7c65e98bf83ab6922fb898b51b3306
