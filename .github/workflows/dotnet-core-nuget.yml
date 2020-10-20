@@ -26,7 +26,7 @@ jobs:
     - name: Push Nupkg to GitHub Packages
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
-        nupkg-path:  './*.nupkg'
+        nupkg-path:  './rest-client-base/rest-client-base/Garbacik.NetCore.Utilities.Restful/*.nupkg'
         repo-owner: 'pawel90g'
         gh-user: 'pawel90g'
         token: ${{ secrets.PACKAGES_TOKEN }}
