@@ -26,6 +26,4 @@ jobs:
     - name: Pack
       run: dotnet pack --no-build --configuration Release Garbacik.NetCore.Utilities.Restful/Garbacik.NetCore.Utilities.Restful.csproj --output .
     - name: Push Github Packages
-      run: dotnet nuget push *.nupkg --no-symbols --skip-duplicate
-      env:
-        NUGET_AUTH_TOKEN: ${{ github.token }}
+      run: dotnet nuget push *.nupkg --no-symbols --skip-duplicate --source https://nuget.pkg.github.com/pawel90g/ --api-key ${{ secrets.PACKAGES_TOKEN }}
