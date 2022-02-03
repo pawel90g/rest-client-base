@@ -14,210 +14,182 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Garbacik.NetCore.Utilities.Restful
+namespace Garbacik.NetCore.Utilities.Restful;
+
+public abstract class RestClientBase
 {
-    public abstract class RestClientBase
+    protected readonly RestClient RestClient;
+
+    private RestClientBase() { }
+
+    protected RestClientBase(RestClient restClient)
     {
-        protected readonly IRestClient _restClient;
+        ServicePointManager.ServerCertificateValidationCallback += (_, _, _, _) => true;
+        RestClient = restClient;
+    }
 
-        private RestClientBase() { }
-
-        protected RestClientBase(IRestClient restClient)
+    protected (Method Method, string Path) GetDataFromAttributes()
+    {
+        try
         {
-            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => { return true; };
-            _restClient = restClient;
-        }
+            var (@interface, methodDefinition) = FindProperInterface(new StackTrace());
+            var methodName = methodDefinition.Name;
 
-        protected (Method Method, string Path) GetDataFromAttributes()
-        {
-            try
+            var method = @interface.GetMethod(methodName);
+            var httpRequestAttr = @interface.GetMethod(methodName).GetCustomAttribute<HttpRequestBaseAttribute>(true);
+            var pathProperties = @interface.GetPropertiesWithAttribute<PathParamAttribute>();
+
+            var attr = methodDefinition.GetCustomAttribute<HttpRequestBaseAttribute>(true);
+            if (attr != null)
+                httpRequestAttr = attr;
+
+            if (httpRequestAttr == null)
+                return (Method.Get, "/");
+
+            var pathProps = methodDefinition.ReflectedType.GetPropertiesWithAttribute<PathParamAttribute>();
+            if (pathProps != null && pathProps.Any())
             {
-                var (@interface, methodDefinition) = FindProperInterface(new StackTrace());
-                var methodName = methodDefinition.Name;
-
-                var method = @interface.GetMethod(methodName);
-                var httpRequestAttr = @interface.GetMethod(methodName).GetCustomAttribute<HttpRequestBaseAttribute>(true);
-                var pathProperties = @interface.GetPropertiesWithAttribute<PathParamAttribute>();
-
-                var attr = methodDefinition.GetCustomAttribute<HttpRequestBaseAttribute>(true);
-                if (attr != null)
-                    httpRequestAttr = attr;
-
-                if (httpRequestAttr == null)
-                    return (Method.GET, "/");
-
-                var pathProps = methodDefinition.ReflectedType.GetPropertiesWithAttribute<PathParamAttribute>();
-                if (pathProps != null && pathProps.Any())
-                {
-                    pathProperties = pathProps;
-                }
-
-                var path = httpRequestAttr.Path;
-                foreach (var prop in pathProperties)
-                {
-                    var val = GetType().GetProperty(prop.Name).GetValue(this);
-                    if (val == null)
-                        continue;
-
-                    var pathAttr = prop.GetCustomAttribute<PathParamAttribute>(true);
-                    var name = pathAttr?.ParamName ?? prop.Name;
-                    ;
-                    path = path.Replace($"{{{name}}}", val.ToString());
-                }
-
-                return (httpRequestAttr.Method, path);
+                pathProperties = pathProps;
             }
-            catch (Exception)
+
+            var path = httpRequestAttr.Path;
+            foreach (var prop in pathProperties)
             {
-                throw;
-            }
-        }
-
-        protected IRestRequest CreateRequest(string resource, Method method)
-        {
-            return CreateRequest(resource, method, DataFormat.Json);
-        }
-
-        protected IRestRequest CreateRequest(string resource, Method method, DataFormat dataFormat)
-        {
-            return new RestRequest(resource, method, dataFormat)
-            {
-                JsonSerializer = NewtonsoftJsonSerializer.Default
-            };
-        }
-
-        protected IRestRequest CreateQueryRequest<T>(string resource, Method method, DataFormat dataFormat, T queryObject)
-        {
-            var request = CreateRequest(resource, method, dataFormat);
-
-            foreach (var prop in queryObject.GetType().GetProperties())
-            {
-                var propertyName = prop.GetCustomAttribute<JsonPropertyAttribute>(true)?.PropertyName ?? prop.Name;
-                var propertyValue = prop.GetValue(queryObject);
-
-                if (propertyValue == null)
+                var val = GetType().GetProperty(prop.Name).GetValue(this);
+                if (val == null)
                     continue;
 
-                request.AddQueryParameter(propertyName, propertyValue.ToString(), true);
+                var pathAttr = prop.GetCustomAttribute<PathParamAttribute>(true);
+                var name = pathAttr?.ParamName ?? prop.Name;
+                ;
+                path = path.Replace($"{{{name}}}", val.ToString());
             }
 
-            return request;
+            return (httpRequestAttr.Method, path);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    protected static RestRequest CreateQueryRequest<T>(string resource, Method method, T queryObject)
+    {
+        var request = new RestRequest(resource, method);
+
+        foreach (var prop in queryObject.GetType().GetProperties())
+        {
+            var propertyName = prop.GetCustomAttribute<JsonPropertyAttribute>(true)?.PropertyName ?? prop.Name;
+            var propertyValue = prop.GetValue(queryObject);
+
+            if (propertyValue is null)
+                continue;
+
+            request.AddQueryParameter(propertyName, propertyValue.ToString(), true);
         }
 
-        protected IRestRequest CreateFormRequest<T>(string resource, Method method, DataFormat dataFormat, T requestObject)
+        return request;
+    }
+
+    protected static RestRequest CreateFormRequest<T>(string resource, Method method, T requestObject)
+    {
+        var request = new RestRequest(resource, method);
+
+        foreach (var prop in requestObject.GetType().GetProperties())
         {
-            var request = CreateRequest(resource, method, dataFormat);
+            var propertyName = prop.GetCustomAttribute<JsonPropertyAttribute>(true).PropertyName;
+            var propertyValue = prop.GetValue(requestObject);
 
-            foreach (var prop in requestObject.GetType().GetProperties())
+            if (propertyValue is null || propertyName is null)
+                continue;
+
+            var isFile = prop.GetCustomAttributes(typeof(FilePropertyAttribute), true).Any();
+
+            if (isFile)
             {
-                var propertyName = prop.GetCustomAttribute<JsonPropertyAttribute>(true).PropertyName;
-                var propertyValue = prop.GetValue(requestObject);
-
-                if (propertyValue == null)
-                    continue;
-
-                var isFile = prop.GetCustomAttributes(typeof(FilePropertyAttribute), true).Any();
-
-                if (isFile)
+                switch (propertyValue)
                 {
-                    if (propertyValue is byte[] fileBytes)
-                    {
-                        request.AddFileBytes(propertyName, fileBytes, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                    }
-                    else if (propertyValue is string filePath)
-                    {
+                    case byte[] fileBytes:
+                        request.AddFile(propertyName, fileBytes, DateTime.Now.ToString("yyyyMMddHHmmss"));
+                        break;
+                    case string filePath:
                         request.AddFile(propertyName, filePath);
-                    }
-                    else if (propertyValue is FileDescription fileDescription)
-                    {
+                        break;
+                    case FileDescription fileDescription:
                         request.AddFile(propertyName, fileDescription.FileBytes, fileDescription.FileName);
-                    }
+                        break;
                 }
-                else
-                {
-                    request.AddParameter(propertyName, propertyValue);
-                }
-            }
-
-            return request;
-        }
-
-        protected IRestRequest CreateBodyRequest<T>(string resource, Method method, T requestObject)
-        {
-            return CreateBodyRequest<T>(resource, method, DataFormat.Json, requestObject);
-        }
-
-        protected IRestRequest CreateMultiPartBodyRequest<T>(string resource, Method method, T requestObject)
-        {
-            var request = CreateRequest(resource, method, DataFormat.None);
-            request.AddObject(requestObject);
-            request.AlwaysMultipartFormData = true;
-            return request;
-        }
-
-        protected IRestRequest CreateBodyRequest<T>(string resource, Method method, DataFormat dataFormat, T requestObject)
-        {
-            var request = CreateRequest(resource, method, dataFormat);
-
-            if (dataFormat == DataFormat.Xml)
-            {
-                request.AddXmlBody(requestObject);
             }
             else
             {
-                request.AddJsonBody(requestObject);
+                request.AddParameter(propertyName, propertyValue, ParameterType.RequestBody);
             }
-
-            return request;
         }
 
-        protected async Task<GenericResponse> ExecuteTaskForResponseAsync(IRestRequest request)
-        {
-            var response = await HandleUnauthorizedAsync(
-                await _restClient.ExecuteAsync(request));
-            return new GenericResponse(response);
-        }
+        return request;
+    }
 
-        protected async Task<GenericResponse<T>> ExecuteTaskForResponseAsync<T>(IRestRequest request)
-        {
-            var response = await HandleUnauthorizedAsync(
-                    await _restClient.ExecuteAsync(request)
-                );
-            return new GenericResponse<T>(response);
-        }
+    protected static RestRequest CreateBodyRequest<T>(string resource, Method method, T requestObject) where T : class =>
+        CreateBodyRequest(resource, method, DataFormat.Json, requestObject);
 
-        private async Task<IRestResponse> HandleUnauthorizedAsync(IRestResponse restResponse)
-        {
-            if (restResponse.StatusCode == HttpStatusCode.Unauthorized
-                && _restClient.Authenticator is IUnauthorizedClient xsrfAuthenticator)
-            {
-                xsrfAuthenticator.MarkAsUnauthorized();
-                return await _restClient.ExecuteAsync(restResponse.Request);
-            }
+    protected static RestRequest CreateMultiPartBodyRequest<T>(string resource, Method method, T requestObject) where T : class
+    {
+        var request = new RestRequest(resource, method);
+        request.AddObject(requestObject);
+        request.AlwaysMultipartFormData = true;
+        return request;
+    }
 
+    protected static RestRequest CreateBodyRequest<T>(string resource, Method method, DataFormat dataFormat, T requestObject) where T : class
+    {
+        var request = new RestRequest(resource, method);
+
+        if (dataFormat == DataFormat.Xml)
+            request.AddXmlBody(requestObject);
+        else
+            request.AddJsonBody(requestObject);
+
+        return request;
+    }
+
+    protected async Task<GenericResponse> ExecuteTaskForResponseAsync(RestRequest request) =>
+        new(await HandleUnauthorizedAsync(
+            await RestClient.ExecuteAsync(request)));
+
+    protected async Task<GenericResponse<T>> ExecuteTaskForResponseAsync<T>(RestRequest request) =>
+        new(await HandleUnauthorizedAsync(
+            await RestClient.ExecuteAsync(request)
+        ));
+
+    private async Task<RestResponse> HandleUnauthorizedAsync(RestResponse restResponse)
+    {
+        if (restResponse.StatusCode != HttpStatusCode.Unauthorized 
+            || RestClient.Authenticator is not IUnauthorizedClient xsrfAuthenticator) 
             return restResponse;
-        }
+        
+        xsrfAuthenticator.MarkAsUnauthorized();
+        return await RestClient.ExecuteAsync(restResponse.Request);
+    }
 
-        private (Type @interface, MethodBase methodDefinition) FindProperInterface(StackTrace stackTrace, int frameIndex = 0)
+    private static (Type @interface, MethodBase methodDefinition) FindProperInterface(StackTrace stackTrace, int frameIndex = 0)
+    {
+        var methodDefinition = stackTrace.GetFrame(frameIndex).GetMethod();
+        var methodName = methodDefinition.Name;
+        var className = methodDefinition.ReflectedType.Name;
+
+        Type @interface;
+
+        if ((@interface = methodDefinition.DeclaringType.GetInterface($"I{className}")) != null)
         {
-            var methodDefinition = stackTrace.GetFrame(frameIndex).GetMethod();
-            var methodName = methodDefinition.Name;
-            var className = methodDefinition.ReflectedType.Name;
-
-            Type @interface;
-
-            if ((@interface = methodDefinition.DeclaringType.GetInterface($"I{className}")) != null)
-            {
-                if (@interface.GetMethod(methodName)
+            if (@interface.GetMethod(methodName)
                     .GetCustomAttribute<HttpRequestBaseAttribute>(true) == null)
-                {
-                    return FindProperInterface(stackTrace, ++frameIndex);
-                }
-
-                return (@interface, methodDefinition);
+            {
+                return FindProperInterface(stackTrace, ++frameIndex);
             }
 
-            return FindProperInterface(stackTrace, ++frameIndex);
+            return (@interface, methodDefinition);
         }
+
+        return FindProperInterface(stackTrace, ++frameIndex);
     }
 }

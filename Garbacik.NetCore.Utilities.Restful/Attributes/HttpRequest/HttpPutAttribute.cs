@@ -1,9 +1,8 @@
 ﻿using RestSharp;
-namespace Garbacik.NetCore.Utilities.Restful.Attributes.HttpRequest
+namespace Garbacik.NetCore.Utilities.Restful.Attributes.HttpRequest;
+
+public sealed class HttpPutAttribute : HttpRequestBaseAttribute
 {
-    public sealed class HttpPutAttribute : HttpRequestBaseAttribute
-    {
-        public HttpPutAttribute() : base(Method.PUT) { }
-        public HttpPutAttribute(string path) : base(Method.PUT, path) { }
-    }
+    public HttpPutAttribute() : base(Method.Put) { }
+    public HttpPutAttribute(string path) : base(Method.Put, path) { }
 }

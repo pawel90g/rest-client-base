@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Garbacik.NetCore.Utilities.Restful.Models
+namespace Garbacik.NetCore.Utilities.Restful.Models;
+
+public class ErrorResponse
 {
-    public class ErrorResponse
-    {
-        [JsonProperty("message")]
-        public string Message { get; set; }
-        [JsonProperty("code")]
-        public string Code { get; set; }
-    }
+    [JsonProperty("message")]
+    public string Message { get; set; }
+    [JsonProperty("code")]
+    public string Code { get; set; }
 }

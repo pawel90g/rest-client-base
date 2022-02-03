@@ -3,61 +3,63 @@ using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Garbacik.NetCore.Utilities.Restful.Authenticators
+namespace Garbacik.NetCore.Utilities.Restful.Authenticators;
+
+public class VendorTokenAuthenticator : IAuthenticator, IUnauthorizedClient
 {
-    public class VendorTokenAuthenticator : IAuthenticator, IUnauthorizedClient
+    private readonly IVendorTokenAuthService vendorTokenAuthService;
+    private bool isAuthorizing = false;
+    private bool isAuthorized = false;
+
+    private string bearerToken;
+
+    public VendorTokenAuthenticator(IVendorTokenAuthService vendorTokenAuthService)
     {
-        private readonly IVendorTokenAuthService vendorTokenAuthService;
-        private bool isAuthorizing = false;
-        private bool isAuthorized = false;
+        this.vendorTokenAuthService = vendorTokenAuthService;
+    }
 
-        private string bearerToken;
+    public ValueTask Authenticate(RestClient client, RestRequest request)
+    {
+        if (isAuthorizing)
+            return ValueTask.CompletedTask;
 
-        public VendorTokenAuthenticator(IVendorTokenAuthService vendorTokenAuthService)
+
+        if (!isAuthorized)
         {
-            this.vendorTokenAuthService = vendorTokenAuthService;
-        }
-
-        public void Authenticate(IRestClient client, IRestRequest request)
-        {
-            if (isAuthorizing)
-                return;
-
-
-            if (!isAuthorized)
+            isAuthorizing = true;
+            try
             {
-                isAuthorizing = true;
-                try
-                {
-                    bearerToken = vendorTokenAuthService
-                        .AuthorizeAsync()
-                        .GetAwaiter()
-                        .GetResult();
+                bearerToken = vendorTokenAuthService
+                    .AuthorizeAsync()
+                    .GetAwaiter()
+                    .GetResult();
 
-                    isAuthorized = true;
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
-                finally
-                {
-                    isAuthorizing = false;
-                }
+                isAuthorized = true;
             }
-
-            request.PrepareHeaders(new Dictionary<string, string>
+            catch (Exception e)
             {
-                { "Authorization", $"Bearer {bearerToken}" },
-            });
-
-            isAuthorized = true;
+                throw;
+            }
+            finally
+            {
+                isAuthorizing = false;
+            }
         }
 
-        public void MarkAsUnauthorized()
+        request.PrepareHeaders(new Dictionary<string, string>
         {
-            isAuthorized = false;
-        }
+            { "Authorization", $"Bearer {bearerToken}" },
+        });
+
+        isAuthorized = true;
+        
+        return ValueTask.CompletedTask;
+    }
+
+    public void MarkAsUnauthorized()
+    {
+        isAuthorized = false;
     }
 }

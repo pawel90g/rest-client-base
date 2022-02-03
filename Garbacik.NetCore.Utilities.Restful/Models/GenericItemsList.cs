@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
 
-namespace Garbacik.NetCore.Utilities.Restful.Models
+namespace Garbacik.NetCore.Utilities.Restful.Models;
+
+public abstract class GenericItemsList<T>
 {
-    public abstract class GenericItemsList<T>
-    {
-        [JsonProperty("items")]
-        public T[] Items { get; set; }
-    }
+    [JsonProperty("items")]
+    public T[] Items { get; set; }
 }

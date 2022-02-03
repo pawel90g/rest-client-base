@@ -1,20 +1,21 @@
-﻿using RestSharp;
+﻿using System.Threading.Tasks;
+using RestSharp;
 using RestSharp.Authenticators;
 
-namespace Garbacik.NetCore.Utilities.Restful.Authenticators
+namespace Garbacik.NetCore.Utilities.Restful.Authenticators;
+
+public class AuthorizationHeaderAuthenticator : IAuthenticator
 {
-    public class AuthorizationHeaderAuthenticator : IAuthenticator
+    private readonly string authorizationHeaderValue;
+        
+    public AuthorizationHeaderAuthenticator(string authorizationHeaderValue)
     {
-        private readonly string authorizationHeaderValue;
-        
-        public AuthorizationHeaderAuthenticator(string authorizationHeaderValue)
-        {
-            this.authorizationHeaderValue = authorizationHeaderValue;
-        }
-        
-        public void Authenticate(IRestClient client, IRestRequest request)
-        {
-            request.AddHeader("Authorization", authorizationHeaderValue);
-        }
+        this.authorizationHeaderValue = authorizationHeaderValue;
+    }
+
+    public ValueTask Authenticate(RestClient client, RestRequest request)
+    {
+        request.AddHeader("Authorization", authorizationHeaderValue);
+        return ValueTask.CompletedTask;
     }
 }

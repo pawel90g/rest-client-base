@@ -1,7 +1,6 @@
-﻿namespace Garbacik.NetCore.Utilities.Restful.Authenticators
+﻿namespace Garbacik.NetCore.Utilities.Restful.Authenticators;
+
+internal interface IUnauthorizedClient
 {
-    internal interface IUnauthorizedClient
-    {
-        void MarkAsUnauthorized();
-    }
+    void MarkAsUnauthorized();
 }

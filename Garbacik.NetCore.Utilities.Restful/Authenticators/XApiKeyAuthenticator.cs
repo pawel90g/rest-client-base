@@ -2,24 +2,26 @@
 using RestSharp;
 using RestSharp.Authenticators;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Garbacik.NetCore.Utilities.Restful.Authenticators
+namespace Garbacik.NetCore.Utilities.Restful.Authenticators;
+
+public class XApiKeyAuthenticator : IAuthenticator
 {
-    public class XApiKeyAuthenticator : IAuthenticator
+    private readonly string xApiKey;
+
+    public XApiKeyAuthenticator(string xApiKey)
     {
-        private readonly string xApiKey;
+        this.xApiKey = xApiKey;
+    }
 
-        public XApiKeyAuthenticator(string xApiKey)
+    public ValueTask Authenticate(RestClient client, RestRequest request)
+    {
+        request.PrepareHeaders(new Dictionary<string, string>
         {
-            this.xApiKey = xApiKey;
-        }
-
-        public void Authenticate(IRestClient client, IRestRequest request)
-        {
-            request.PrepareHeaders(new Dictionary<string, string>
-            {
-                { "X-API-Key", xApiKey }
-            });
-        }
+            { "X-API-Key", xApiKey }
+        });
+        
+        return ValueTask.CompletedTask;
     }
 }
