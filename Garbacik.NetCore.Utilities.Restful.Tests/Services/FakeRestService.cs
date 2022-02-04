@@ -4,7 +4,7 @@ namespace Garbacik.NetCore.Utilities.Restful.Tests.Services;
 
 internal class FakeRestService : RestClientBase, IFakeRestService
 {
-    public FakeRestService() : base(new RestClient())
+    public FakeRestService() : base("http://fake-url")
     {
     }
 

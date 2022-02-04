@@ -4,7 +4,6 @@ using Garbacik.NetCore.Utilities.Restful.Attributes.RequestParamTypes;
 using Garbacik.NetCore.Utilities.Restful.Authenticators;
 using Garbacik.NetCore.Utilities.Restful.Extensions;
 using Garbacik.NetCore.Utilities.Restful.Models;
-using Garbacik.NetCore.Utilities.Restful.Tools;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -13,20 +12,52 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using RestSharp.Authenticators;
 
 namespace Garbacik.NetCore.Utilities.Restful;
 
 public abstract class RestClientBase
 {
-    protected readonly RestClient RestClient;
+    private readonly RestClient restClient;
 
-    private RestClientBase() { }
-
-    protected RestClientBase(RestClient restClient)
+    private RestClientBase()
     {
-        ServicePointManager.ServerCertificateValidationCallback += (_, _, _, _) => true;
-        RestClient = restClient;
     }
+
+    protected RestClientBase(string url) =>
+        restClient = new RestClient(url);
+
+    protected RestClientBase(string url, bool skipSslVerification) =>
+        restClient = skipSslVerification
+            ? new RestClient(
+                new RestClientOptions
+                {
+                    BaseUrl = new Uri(url ?? throw new ArgumentNullException(nameof(url))),
+                    RemoteCertificateValidationCallback = (_, _, _, _) => true,
+                })
+            : new RestClient(url);
+
+    protected RestClientBase(string url, IAuthenticator authenticator) =>
+        restClient = new RestClient(url)
+        {
+            Authenticator = authenticator
+        };
+
+    protected RestClientBase(string url, IAuthenticator authenticator, bool skipSslVerification) =>
+        restClient = skipSslVerification
+            ? new RestClient(
+                new RestClientOptions
+                {
+                    BaseUrl = new Uri(url ?? throw new ArgumentNullException(nameof(url))),
+                    RemoteCertificateValidationCallback = (_, _, _, _) => true,
+                })
+            {
+                Authenticator = authenticator
+            }
+            : new RestClient(url)
+            {
+                Authenticator = authenticator
+            };
 
     protected (Method Method, string Path) GetDataFromAttributes()
     {
@@ -35,7 +66,6 @@ public abstract class RestClientBase
             var (@interface, methodDefinition) = FindProperInterface(new StackTrace());
             var methodName = methodDefinition.Name;
 
-            var method = @interface.GetMethod(methodName);
             var httpRequestAttr = @interface.GetMethod(methodName).GetCustomAttribute<HttpRequestBaseAttribute>(true);
             var pathProperties = @interface.GetPropertiesWithAttribute<PathParamAttribute>();
 
@@ -129,10 +159,12 @@ public abstract class RestClientBase
         return request;
     }
 
-    protected static RestRequest CreateBodyRequest<T>(string resource, Method method, T requestObject) where T : class =>
+    protected static RestRequest CreateBodyRequest<T>(string resource, Method method, T requestObject)
+        where T : class =>
         CreateBodyRequest(resource, method, DataFormat.Json, requestObject);
 
-    protected static RestRequest CreateMultiPartBodyRequest<T>(string resource, Method method, T requestObject) where T : class
+    protected static RestRequest CreateMultiPartBodyRequest<T>(string resource, Method method, T requestObject)
+        where T : class
     {
         var request = new RestRequest(resource, method);
         request.AddObject(requestObject);
@@ -140,7 +172,8 @@ public abstract class RestClientBase
         return request;
     }
 
-    protected static RestRequest CreateBodyRequest<T>(string resource, Method method, DataFormat dataFormat, T requestObject) where T : class
+    protected static RestRequest CreateBodyRequest<T>(string resource, Method method, DataFormat dataFormat,
+        T requestObject) where T : class
     {
         var request = new RestRequest(resource, method);
 
@@ -154,24 +187,25 @@ public abstract class RestClientBase
 
     protected async Task<GenericResponse> ExecuteTaskForResponseAsync(RestRequest request) =>
         new(await HandleUnauthorizedAsync(
-            await RestClient.ExecuteAsync(request)));
+            await restClient.ExecuteAsync(request)));
 
     protected async Task<GenericResponse<T>> ExecuteTaskForResponseAsync<T>(RestRequest request) =>
         new(await HandleUnauthorizedAsync(
-            await RestClient.ExecuteAsync(request)
+            await restClient.ExecuteAsync(request)
         ));
 
     private async Task<RestResponse> HandleUnauthorizedAsync(RestResponse restResponse)
     {
-        if (restResponse.StatusCode != HttpStatusCode.Unauthorized 
-            || RestClient.Authenticator is not IUnauthorizedClient xsrfAuthenticator) 
+        if (restResponse.StatusCode != HttpStatusCode.Unauthorized
+            || restClient.Authenticator is not IUnauthorizedClient xsrfAuthenticator)
             return restResponse;
-        
+
         xsrfAuthenticator.MarkAsUnauthorized();
-        return await RestClient.ExecuteAsync(restResponse.Request);
+        return await restClient.ExecuteAsync(restResponse.Request);
     }
 
-    private static (Type @interface, MethodBase methodDefinition) FindProperInterface(StackTrace stackTrace, int frameIndex = 0)
+    private static (Type @interface, MethodBase methodDefinition) FindProperInterface(StackTrace stackTrace,
+        int frameIndex = 0)
     {
         var methodDefinition = stackTrace.GetFrame(frameIndex).GetMethod();
         var methodName = methodDefinition.Name;
