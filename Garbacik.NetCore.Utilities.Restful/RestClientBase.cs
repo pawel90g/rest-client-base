@@ -103,6 +103,9 @@ public abstract class RestClientBase
         }
     }
 
+    protected static RestRequest CreateSimpleRequest(string resource, Method method)
+        => new RestRequest(resource, method);
+
     protected static RestRequest CreateQueryRequest<T>(string resource, Method method, T queryObject)
     {
         var request = new RestRequest(resource, method);
