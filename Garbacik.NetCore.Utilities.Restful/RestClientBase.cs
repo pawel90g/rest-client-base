@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.NewtonsoftJson;
 
@@ -131,9 +132,26 @@ public abstract class RestClientBase
     {
         var request = new RestRequest(resource, method);
 
+        var jsonObjectNamingStrategyType = requestObject
+            .GetType()
+            .GetCustomAttribute<JsonObjectAttribute>(true)?
+            .NamingStrategyType;
+
         foreach (var prop in requestObject.GetType().GetProperties())
         {
-            var propertyName = prop.GetCustomAttribute<JsonPropertyAttribute>(true).PropertyName;
+            var propertyName = prop.Name;
+            if (jsonObjectNamingStrategyType is not null)
+            {
+                if (jsonObjectNamingStrategyType == typeof(CamelCaseNamingStrategy))
+                    propertyName = prop.Name.ToCamelCase();
+            }
+            else
+            {
+                var jsonPropertyAttribute = prop.GetCustomAttribute<JsonPropertyAttribute>(true);
+                if (jsonPropertyAttribute is not null)
+                    propertyName = jsonPropertyAttribute.PropertyName;
+            }
+
             var propertyValue = prop.GetValue(requestObject);
 
             if (propertyValue is null || propertyName is null)

@@ -8,9 +8,15 @@ internal class FakeRestService : RestClientBase, IFakeRestService
     {
     }
 
-    public RestRequest QueryParametersTest(QueryRequest request)
+    public RestRequest QueryParametersTest<T>(T request)
     {
         var (method, path) = GetDataFromAttributes();
         return CreateQueryRequest(path, method, request);
+    }
+
+    public RestRequest FormRequestTest<T>(T request)
+    {
+        var (method, path) = GetDataFromAttributes();
+        return CreateFormRequest(path, method, request);
     }
 }

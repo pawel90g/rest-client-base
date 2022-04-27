@@ -6,5 +6,8 @@ namespace Garbacik.NetCore.Utilities.Restful.Tests.Services;
 internal interface IFakeRestService
 {
     [HttpGet("fake-path")]
-    RestRequest QueryParametersTest(QueryRequest request);
+    RestRequest QueryParametersTest<T>(T request);
+
+    [HttpPost("fake-path")]
+    RestRequest FormRequestTest<T>(T request);
 }
