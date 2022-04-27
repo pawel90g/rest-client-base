@@ -13,6 +13,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using RestSharp.Authenticators;
+using RestSharp.Serializers.NewtonsoftJson;
 
 namespace Garbacik.NetCore.Utilities.Restful;
 
@@ -58,6 +59,8 @@ public abstract class RestClientBase
             {
                 Authenticator = authenticator
             };
+
+    protected void UseNewtonsoftJsonSerializer() => restClient.UseNewtonsoftJson();
 
     protected (Method Method, string Path) GetDataFromAttributes()
     {

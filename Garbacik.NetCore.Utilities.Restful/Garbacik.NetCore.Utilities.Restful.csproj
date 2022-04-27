@@ -9,9 +9,9 @@
     <Company>Garbacik</Company>
     <PackageDescription>Rest Client implementation based on RestSharp library</PackageDescription>
     <RepositoryUrl>https://github.com/pawel90g/rest-client-base</RepositoryUrl>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
-    <PackageVersion>2.2.0</PackageVersion>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
+    <PackageVersion>2.3.0</PackageVersion>
     <LangVersion>default</LangVersion>
     <Title>RestClientBase</Title>
   </PropertyGroup>
@@ -19,7 +19,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.13" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="107.2.0" />
+    <PackageReference Include="RestSharp" Version="107.3.0" />
+    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="107.3.0" />
   </ItemGroup>
 
 </Project>
