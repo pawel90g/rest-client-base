@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -217,6 +218,12 @@ public abstract class RestClientBase
         new(await HandleUnauthorizedAsync(
             await restClient.ExecuteAsync(request)
         ));
+
+    protected async Task<Stream> ExecuteStreamDownloadAsync(RestRequest request) =>
+        await restClient.DownloadStreamAsync(request);
+
+    protected async Task<byte[]> ExecuteDataDownloadAsync(RestRequest request) =>
+        await restClient.DownloadDataAsync(request);
 
     private async Task<RestResponse> HandleUnauthorizedAsync(RestResponse restResponse)
     {
